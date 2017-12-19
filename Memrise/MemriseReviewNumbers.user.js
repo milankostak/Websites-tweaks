@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memrise review numbers
 // @namespace    https://github.com/milankostak/Websites-tweaks/
-// @version      1.0
+// @version      1.0.1
 // @description  adds back review buttons with numbers of words for review
 // @author       Milan Košťák
 // @match        https://www.memrise.com/home/
@@ -13,9 +13,11 @@
 (function() {
     'use strict';
 
+    var customClass = "asdfasdf";
+
     function main() {
         // remove previously created buttons
-        var buttons = document.querySelectorAll(".asdfasdf");
+        var buttons = document.querySelectorAll("."+customClass);
         for (var ii = 0; ii < buttons.length; ii++) {
             buttons[ii].remove();
         }
@@ -27,6 +29,7 @@
             var course = courses[id];
             var count = course.review();
 
+            // skip when there are no words for review
             if (count === 0) continue;
 
             var link = document.createElement("a");
@@ -40,6 +43,9 @@
             link.setAttribute("data-original-title", "Review words you've learned");
             link.style.marginRight = "10px";
             link.style.marginTop = "3px";
+            link.addEventListener("click", function() {
+                console.log("click");
+            });
 
             var span = document.createElement("span");
             span.classList.add("text");
@@ -50,22 +56,35 @@
         }
     }
 
-    // observe content for changes
-    var targetNode = document.getElementById('content');
 
-    var callback = function() {
-        // disconnect to avoid loop because the content is being changed inside the main function
-        disconnect();
-        main();
-        // connect the observer back
-        connect();
+    var observerCallback = function(mutationsList) {
+        // direct click on the button didn't work because the observer was called
+        // when the button is clicked don't call main() function
+        var block = false;
+        for (var mutation of mutationsList) {
+            if (mutation.target.classList.contains(customClass)) {
+                block = true;
+                break;
+            }
+        }
+        if (!block) {
+            // disconnect to avoid loop because the content is being changed inside the main function
+            disconnect();
+            main();
+            // connect the observer back
+            connect();
+        }
     };
 
-    var observer = new MutationObserver(callback);
+    // observe content for changes
+    // used as trigger for calling main() function
+    var targetNode = document.getElementById('content');
+    var observer = new MutationObserver(observerCallback);
 
     var connect = function() {
         observer.observe(targetNode, { attributes: true, childList: true, subtree: true });
     };
+
     var disconnect = function() {
         observer.disconnect();
     };
