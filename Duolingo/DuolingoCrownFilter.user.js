@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Duolingo Crown Filter
 // @namespace    https://github.com/milankostak/Websites-tweaks/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Filter skills by crown count
 // @author       Milan Košťák
 // @match        https://www.duolingo.com/
@@ -15,8 +15,7 @@
 
     let nodes = document.querySelectorAll(".qLLbC");
 
-    let buttons = document.querySelectorAll("button"),
-        checkpointButtons = [...buttons].filter(e => e.innerText === "Checkpoint passed");
+    let checkpoints = document.querySelectorAll(".HVmLo");
 
     function show(i) {
         nodes[i].parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "inline-block";
@@ -26,7 +25,7 @@
         for (let i = 0; i < nodes.length; i++) {
             show(i);
         }
-        checkpointButtons.forEach(function(el) {el.style.display = "inline-block";});
+        checkpoints.forEach(function(el) {el.parentNode.parentNode.parentNode.style.display = "block";});
     }
 
     function hide(i) {
@@ -42,7 +41,7 @@
         a.style.top = "15px";
         a.style.borderRadius = "50px";
         a.style.color = "#999";
-        a.style.margin = "12px 12px 12px 0";
+        a.style.margin = "12px 12px 25px 0";
         a.style.display = "inline-block";
         a.onmouseenter = function() {
             a.style.background = "rgba(0,0,0,.05)";
@@ -62,7 +61,7 @@
                     if (nodes[j].innerText == i) show(j);
                     else hide(j);
                 }
-                checkpointButtons.forEach(function(el) {el.style.display = "none";});
+                checkpoints.forEach(function(el) {el.parentNode.parentNode.parentNode.style.display = "none";});
             };
         }
         document.querySelector(".mAsUf").append(a);
