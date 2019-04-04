@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Duolingo Crown Filter
 // @namespace    https://github.com/milankostak/Websites-tweaks/
-// @version      1.0.2
+// @version      1.1.0
 // @description  Filter skills by crown count
 // @author       Milan Košťák
 // @match        https://www.duolingo.com/
@@ -12,8 +12,8 @@
 
 (function() {
     'use strict';
-
-    let nodes = document.querySelectorAll(".qLLbC");
+    //debugger;
+    let nodes = document.querySelectorAll("._2PyWM");
 
     let checkpoints = document.querySelectorAll(".HVmLo");
 
@@ -25,19 +25,22 @@
         for (let i = 0; i < nodes.length; i++) {
             show(i);
         }
-        checkpoints.forEach(function(el) {el.parentNode.parentNode.parentNode.style.display = "block";});
+        changeCheckpoints("inline-block");
     }
 
     function hide(i) {
         nodes[i].parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
     }
 
-    for (let i = 0; i <= 5; i++) {
+    function changeCheckpoints(state) {
+        checkpoints.forEach(el => {el.parentNode.parentNode.parentNode.style.display = state});
+    }
+
+    for (let i = -1; i <= 5; i++) {
         let a = document.createElement("a");
         a.href = "#";
         a.style.padding = "8px 20px";
         a.style.border = "2px solid #dadada";
-        a.style.position = "relative";
         a.style.top = "15px";
         a.style.borderRadius = "50px";
         a.style.color = "#999";
@@ -51,19 +54,29 @@
             a.style.background = "transparent";
             a.style.color = "#999";
         };
-        if (i === 0) {
+        if (i === -1) {
             a.innerHTML = "Show all";
             a.onclick = showAll;
+        } else if (i === 0) {
+            a.innerHTML = i;
+            a.onclick = function() {
+                for (let j = 0; j < nodes.length; j++) {
+                    if (nodes[j].nextSibling === null) show(j);
+                    else hide(j);
+                }
+                changeCheckpoints("none");
+            };
         } else {
             a.innerHTML = i;
             a.onclick = function() {
                 for (let j = 0; j < nodes.length; j++) {
-                    if (nodes[j].innerText == i) show(j);
+                    if (nodes[j].nextSibling !== null && nodes[j].nextSibling .innerText == i) show(j);
                     else hide(j);
                 }
-                checkpoints.forEach(function(el) {el.parentNode.parentNode.parentNode.style.display = "none";});
+                changeCheckpoints("none");
             };
         }
-        document.querySelector(".mAsUf").append(a);
+        document.querySelector(".w8Lxd").append(a);
     }
+    document.querySelector(".w8Lxd").style.height = "80px";
 })();
