@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Duolingo Crown Filter
 // @namespace    https://github.com/milankostak/Websites-tweaks/
-// @version      1.1.0
+// @version      1.1.1
 // @description  Filter skills by crown count
 // @author       Milan Košťák
 // @match        https://www.duolingo.com/
@@ -18,7 +18,7 @@
     let checkpoints = document.querySelectorAll(".HVmLo");
 
     function show(i) {
-        nodes[i].parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "inline-block";
+        applyStyle(i, "block");
     }
 
     function showAll() {
@@ -29,7 +29,11 @@
     }
 
     function hide(i) {
-        nodes[i].parentNode.parentNode.parentNode.parentNode.parentNode.style.display = "none";
+        applyStyle(i, "none");
+    }
+
+    function applyStyle(i, value) {
+        nodes[i].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.style.display = value;
     }
 
     function changeCheckpoints(state) {
@@ -70,7 +74,7 @@
             a.innerHTML = i;
             a.onclick = function() {
                 for (let j = 0; j < nodes.length; j++) {
-                    if (nodes[j].nextSibling !== null && nodes[j].nextSibling .innerText == i) show(j);
+                    if (nodes[j].nextSibling !== null && nodes[j].nextSibling.innerText == i) show(j);
                     else hide(j);
                 }
                 changeCheckpoints("none");
